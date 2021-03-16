@@ -1,24 +1,50 @@
-import React from "react";
+import React, { useState } from "react";
 
-//include images into your bundle
-import rigoImage from "../../img/rigo-baby.jpg";
-
-//create your first component
 export function Home() {
+	const [todos, setTodos] = useState([]);
+	const [todo, setTodo] = useState("");
+
+	function handleSubmit(e) {
+		e.preventDefault();
+
+		const newTodo = {
+			id: new Date().getTime(),
+			text: todo
+		};
+
+		if (/^\s*$/.test(todo)) {
+			alert("Your todo cannot be empty!");
+		} else {
+			setTodos([...todos].concat(newTodo));
+			setTodo("");
+		}
+	}
+
+	function deleteTodo(id) {
+		const updatedTodos = [...todos].filter(todo => todo.id !== id);
+
+		setTodos(updatedTodos);
+	}
+
 	return (
-		<div className="text-center mt-5">
-			<h1>Hello Rigo!</h1>
-			<p>
-				<img src={rigoImage} />
-			</p>
-			<a href="#" className="btn btn-success">
-				If you see this green button... bootstrap is working
-			</a>
-			<p>
-				Made by{" "}
-				<a href="http://www.4geeksacademy.com">4Geeks Academy</a>, with
-				love!
-			</p>
+		<div id="container">
+			<h3>Todo List</h3>
+			<form onSubmit={handleSubmit}>
+				<input
+					type="text"
+					onChange={e => setTodo(e.target.value)}
+					value={todo}
+					placeholder="Type your todo"></input>
+				<div>
+					<button type="submit">Add</button>
+				</div>
+			</form>
+			{todos.map(todo => (
+				<div key={todo.key}>
+					<div>{todo.text}</div>
+					<button onClick={() => deleteTodo(todo.id)}>Delete</button>
+				</div>
+			))}
 		</div>
 	);
 }
