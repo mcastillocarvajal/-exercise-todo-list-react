@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 
 export function Home() {
-	const [todos, setTodos] = useState([]);
 	const [todo, setTodo] = useState("");
+	const [todos, setTodos] = useState([]);
+	const [count, setCount] = useState(0);
 
 	function handleSubmit(e) {
 		e.preventDefault();
@@ -17,6 +18,7 @@ export function Home() {
 		} else {
 			setTodos([...todos].concat(newTodo));
 			setTodo("");
+			setCount(count + 1);
 		}
 	}
 
@@ -24,27 +26,37 @@ export function Home() {
 		const updatedTodos = [...todos].filter(todo => todo.id !== id);
 
 		setTodos(updatedTodos);
+		setCount(count - 1);
 	}
 
 	return (
 		<div id="container">
 			<h3>Todo List</h3>
-			<form onSubmit={handleSubmit}>
+			<form className="input-group my-3" onSubmit={handleSubmit}>
 				<input
+					className="form-control"
 					type="text"
 					onChange={e => setTodo(e.target.value)}
 					value={todo}
-					placeholder="Type your todo"></input>
-				<div>
-					<button type="submit">Add</button>
+					placeholder="Type your todo"
+					maxLength="32"></input>
+				<div className="input-group-append">
+					<button className="btn btn-outline-primary" type="submit">
+						Add
+					</button>
 				</div>
 			</form>
 			{todos.map(todo => (
-				<div key={todo.key}>
-					<div>{todo.text}</div>
-					<button onClick={() => deleteTodo(todo.id)}>Delete</button>
+				<div className="input-group mb-3" key={todo.key}>
+					<div className="form-control">{todo.text}</div>
+					<button
+						className="btn btn-outline-danger"
+						onClick={() => deleteTodo(todo.id)}>
+						<i className="fas fa-trash-alt"></i>
+					</button>
 				</div>
 			))}
+			<small>{count} item(s) left.</small>
 		</div>
 	);
 }
