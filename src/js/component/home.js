@@ -29,6 +29,30 @@ export function Home() {
 		setCount(count - 1);
 	}
 
+	//const getAPI = () => {
+	// fetch("https://assets.breatheco.de/apis/fake/todos/user/mcastillo", {
+	// 	method: "GET",
+	// 	headers: {
+	// 		"Content-Type": "application/json"
+	// 	}
+	// })
+	// 	.then(res => console.log(res.json()))
+	// 	.then(data => console.log(data))
+	// 	.catch(err => console.log(err));
+	//};
+
+	//const postAPI = () => {
+	// 	fetch("https://assets.breatheco.de/apis/fake/todos/user/mcastillo", {
+	// 		method: "POST",
+	// 		headers: {
+	// 			"Content-Type": "application/json"
+	// 		},
+	// 		body: JSON.stringify({
+	// 			user: "mcastillo"
+	// 		})
+	// 	});
+	//};
+
 	return (
 		<div id="container">
 			<h3>Todo List</h3>
