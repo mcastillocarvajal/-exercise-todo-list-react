@@ -1,16 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 export function Home() {
 	const [todo, setTodo] = useState("");
 	const [todos, setTodos] = useState([]);
-	const [count, setCount] = useState(0);
+
+	useEffect(() => {
+		getAPI();
+	}, []);
 
 	function handleSubmit(e) {
 		e.preventDefault();
 
 		const newTodo = {
-			id: new Date().getTime(),
-			text: todo
+			label: todo,
+			done: false
 		};
 
 		if (/^\s*$/.test(todo)) {
@@ -18,40 +21,59 @@ export function Home() {
 		} else {
 			setTodos([...todos].concat(newTodo));
 			setTodo("");
-			setCount(count + 1);
+			putAPI(todos);
 		}
 	}
 
-	function deleteTodo(id) {
-		const updatedTodos = [...todos].filter(todo => todo.id !== id);
-
-		setTodos(updatedTodos);
-		setCount(count - 1);
+	function deleteTodo(i) {
+		todos.splice(i, 1);
+		setTodos([...todos]);
+		putAPI(todos);
 	}
 
-	//const getAPI = () => {
-	// fetch("https://assets.breatheco.de/apis/fake/todos/user/mcastillo", {
-	// 	method: "GET",
-	// 	headers: {
-	// 		"Content-Type": "application/json"
-	// 	}
-	// })
-	// 	.then(res => console.log(res.json()))
-	// 	.then(data => console.log(data))
-	// 	.catch(err => console.log(err));
-	//};
+	const handleClear = () => {
+		setTodos([]);
+	};
 
-	//const postAPI = () => {
-	// 	fetch("https://assets.breatheco.de/apis/fake/todos/user/mcastillo", {
-	// 		method: "POST",
-	// 		headers: {
-	// 			"Content-Type": "application/json"
-	// 		},
-	// 		body: JSON.stringify({
-	// 			user: "mcastillo"
-	// 		})
-	// 	});
-	//};
+	// FETCH FUNCTIONS
+
+	const getAPI = () => {
+		fetch("https://assets.breatheco.de/apis/fake/todos/user/mcastillo", {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json"
+			}
+		})
+			.then(res => {
+				return res.json();
+			})
+			.then(data => {
+				setTodos(data);
+				console.log(data);
+			})
+			.catch(err => {
+				console.error(err);
+			});
+	};
+
+	const putAPI = element => {
+		fetch("https://assets.breatheco.de/apis/fake/todos/user/mcastillo", {
+			method: "PUT",
+			headers: {
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify(element)
+		})
+			.then(res => {
+				return res.json();
+			})
+			.then(data => {
+				console.log(data);
+			})
+			.catch(err => {
+				console.error(err);
+			});
+	};
 
 	return (
 		<div id="container">
@@ -70,17 +92,21 @@ export function Home() {
 					</button>
 				</div>
 			</form>
-			{todos.map(todo => (
-				<div className="input-group mb-3" key={todo.key}>
-					<div className="form-control">{todo.text}</div>
+			{todos.map((todo, index) => (
+				<div className="input-group mb-3" key={index}>
+					<div className="form-control">{todo.label}</div>
 					<button
 						className="btn btn-outline-danger"
-						onClick={() => deleteTodo(todo.id)}>
+						onClick={() => deleteTodo(index)}>
 						<i className="fas fa-trash-alt"></i>
 					</button>
 				</div>
 			))}
-			<small>{count} item(s) left.</small>
+			<small>{todos.length} item(s) left.</small>
+			<br></br>
+			<button className="btn btn-danger mt-2" onClick={handleClear}>
+				Clear all tasks
+			</button>
 		</div>
 	);
 }
